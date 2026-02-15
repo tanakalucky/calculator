@@ -5,6 +5,14 @@ import type { CalculatorState } from "./types";
 
 const MAX_DISPLAY_DIGITS = 16;
 
+const OPERATION_SYMBOLS: Record<Operation, string> = {
+  add: "+",
+  subtract: "−",
+  multiply: "×",
+  divide: "÷",
+  power: "^",
+};
+
 export const useCalculator = () => {
   const [state, setState] = useState<CalculatorState>({
     display: "0",
@@ -12,6 +20,7 @@ export const useCalculator = () => {
     operation: null,
     waitingForOperand: false,
     error: null,
+    expression: "",
   });
 
   const clear = useCallback(() => {
@@ -21,6 +30,7 @@ export const useCalculator = () => {
       operation: null,
       waitingForOperand: false,
       error: null,
+      expression: "",
     });
   }, []);
 
@@ -34,6 +44,7 @@ export const useCalculator = () => {
           operation: null,
           waitingForOperand: false,
           error: null,
+          expression: "",
         };
       }
 
@@ -43,6 +54,8 @@ export const useCalculator = () => {
           display: digit,
           waitingForOperand: false,
           error: null,
+          // =の後（previousValue === null）は式をクリア
+          ...(prevState.previousValue === null && { expression: "" }),
         };
       }
 
@@ -69,6 +82,7 @@ export const useCalculator = () => {
           operation: null,
           waitingForOperand: false,
           error: null,
+          expression: "",
         };
       }
 
@@ -78,6 +92,8 @@ export const useCalculator = () => {
           display: "0.",
           waitingForOperand: false,
           error: null,
+          // =の後（previousValue === null）は式をクリア
+          ...(prevState.previousValue === null && { expression: "" }),
         };
       }
 
@@ -96,6 +112,7 @@ export const useCalculator = () => {
   const performOperation = useCallback((nextOperation: Operation) => {
     setState((prevState) => {
       const inputValue = prevState.display;
+      const symbol = OPERATION_SYMBOLS[nextOperation];
 
       // エラー状態の場合、クリアしてから操作を設定
       if (prevState.error) {
@@ -105,6 +122,7 @@ export const useCalculator = () => {
           operation: nextOperation,
           waitingForOperand: true,
           error: null,
+          expression: `${inputValue} ${symbol} `,
         };
       }
 
@@ -114,6 +132,7 @@ export const useCalculator = () => {
           previousValue: inputValue,
           operation: nextOperation,
           waitingForOperand: true,
+          expression: `${inputValue} ${symbol} `,
         };
       }
 
@@ -126,6 +145,7 @@ export const useCalculator = () => {
             operation: nextOperation,
             waitingForOperand: true,
             error: null,
+            expression: `${result} ${symbol} `,
           };
         } catch (error) {
           return {
@@ -136,10 +156,12 @@ export const useCalculator = () => {
         }
       }
 
+      // 演算子変更（waitingForOperand中に別の演算子を押した場合）
       return {
         ...prevState,
         operation: nextOperation,
         waitingForOperand: true,
+        expression: `${prevState.previousValue} ${symbol} `,
       };
     });
   }, []);
@@ -157,6 +179,8 @@ export const useCalculator = () => {
         return prevState;
       }
 
+      const symbol = OPERATION_SYMBOLS[prevState.operation];
+
       try {
         const result = calculate(prevState.previousValue, inputValue, prevState.operation);
         return {
@@ -165,6 +189,7 @@ export const useCalculator = () => {
           operation: null,
           waitingForOperand: true,
           error: null,
+          expression: `${prevState.previousValue} ${symbol} ${inputValue} =`,
         };
       } catch (error) {
         return {
@@ -203,6 +228,7 @@ export const useCalculator = () => {
   return {
     display: state.display,
     error: state.error,
+    expression: state.expression,
     inputDigit,
     inputDecimal,
     performOperation,

@@ -6,6 +6,7 @@ export type CalculatorState = {
   operation: Operation | null;
   waitingForOperand: boolean;
   error: string | null;
+  expression: string;
 };
 
 export type ButtonVariant = "default" | "operator" | "equals" | "clear";

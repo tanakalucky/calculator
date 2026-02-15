@@ -3,6 +3,7 @@ import { cn } from "@/shared/lib";
 type CalculatorDisplayProps = {
   value: string;
   error: string | null;
+  expression: string;
 };
 
 const MAX_FONT_SIZE_LENGTH = 10;
@@ -18,11 +19,14 @@ function getDisplayFontSize(text: string): string {
   return "text-xl";
 }
 
-export function CalculatorDisplay({ value, error }: CalculatorDisplayProps) {
+export function CalculatorDisplay({ value, error, expression }: CalculatorDisplayProps) {
   const displayText = error ?? value;
 
   return (
     <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-6 overflow-hidden">
+      <div className="h-6 text-sm text-gray-500 dark:text-gray-400 truncate font-mono text-right">
+        {expression}
+      </div>
       <div
         className={cn(
           "font-mono text-right truncate",

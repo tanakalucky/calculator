@@ -7,6 +7,7 @@ export function CalculatorGrid() {
   const {
     display,
     error,
+    expression,
     inputDigit,
     inputDecimal,
     performOperation,
@@ -77,7 +78,7 @@ export function CalculatorGrid() {
 
   return (
     <div className="w-full max-w-md mx-auto p-4 space-y-4">
-      <CalculatorDisplay value={display} error={error} />
+      <CalculatorDisplay value={display} error={error} expression={expression} />
 
       <div className="grid grid-cols-4 gap-3">
         {/* 1行目: C, +/-, x^y, ÷ */}
