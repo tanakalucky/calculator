@@ -1,4 +1,4 @@
-export type Operation = "add" | "subtract" | "multiply" | "divide" | "power";
+import type { Operation } from "@/shared/lib/calculator";
 
 export type CalculatorState = {
   display: string;
