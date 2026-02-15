@@ -3,6 +3,7 @@ import viteLogo from "/vite.svg";
 import cloudflareLogo from "@/shared/assets/Cloudflare_Logo.svg";
 import honoLogo from "@/shared/assets/hono.svg";
 import reactLogo from "@/shared/assets/react.svg";
+import { CalculatorGrid } from "@/features/calculator";
 
 export function HomePage() {
   const [count, setCount] = useState(0);
@@ -92,6 +93,12 @@ export function HomePage() {
           </code>{" "}
           to change the name
         </p>
+      </div>
+
+      {/* Calculator section */}
+      <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 md:p-8 mb-8 max-w-2xl w-full shadow-lg">
+        <h2 className="text-2xl font-bold mb-6 text-center text-white">電卓</h2>
+        <CalculatorGrid />
       </div>
 
       {/* Footer */}
