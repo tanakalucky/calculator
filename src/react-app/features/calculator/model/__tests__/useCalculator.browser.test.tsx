@@ -11,6 +11,7 @@ function TestCalculator() {
     <div>
       <div data-testid="display">{calc.display}</div>
       <div data-testid="error">{calc.error || "null"}</div>
+      <div data-testid="expression">{calc.expression}</div>
       <button data-testid="btn-0" onClick={() => calc.inputDigit("0")}>
         0
       </button>
@@ -304,6 +305,126 @@ describe("useCalculator", () => {
       await page.getByTestId("btn-toggle-sign").click();
 
       await expect.element(display).toHaveTextContent("5");
+    });
+  });
+
+  describe("式表示", () => {
+    it("初期状態で式表示が空である", async () => {
+      await render(<TestCalculator />);
+      const expression = page.getByTestId("expression");
+      await expect.element(expression).toHaveTextContent("");
+    });
+
+    it("演算子押下で式が表示される", async () => {
+      await render(<TestCalculator />);
+      const expression = page.getByTestId("expression");
+
+      await page.getByTestId("btn-5").click();
+      await page.getByTestId("btn-add").click();
+
+      await expect.element(expression).toHaveTextContent("5 +");
+    });
+
+    it("数字入力中に式が維持される", async () => {
+      await render(<TestCalculator />);
+      const expression = page.getByTestId("expression");
+
+      await page.getByTestId("btn-5").click();
+      await page.getByTestId("btn-add").click();
+      await page.getByTestId("btn-3").click();
+
+      await expect.element(expression).toHaveTextContent("5 +");
+    });
+
+    it("=で完全な式が表示される", async () => {
+      await render(<TestCalculator />);
+      const expression = page.getByTestId("expression");
+
+      await page.getByTestId("btn-5").click();
+      await page.getByTestId("btn-add").click();
+      await page.getByTestId("btn-3").click();
+      await page.getByTestId("btn-equals").click();
+
+      await expect.element(expression).toHaveTextContent("5 + 3 =");
+    });
+
+    it("連続演算で式が更新される", async () => {
+      await render(<TestCalculator />);
+      const expression = page.getByTestId("expression");
+
+      await page.getByTestId("btn-2").click();
+      await page.getByTestId("btn-add").click();
+      await expect.element(expression).toHaveTextContent("2 +");
+
+      await page.getByTestId("btn-3").click();
+      await page.getByTestId("btn-add").click();
+      await expect.element(expression).toHaveTextContent("5 +");
+    });
+
+    it("クリアで式がリセットされる", async () => {
+      await render(<TestCalculator />);
+      const expression = page.getByTestId("expression");
+
+      await page.getByTestId("btn-5").click();
+      await page.getByTestId("btn-add").click();
+      await page.getByTestId("btn-clear").click();
+
+      await expect.element(expression).toHaveTextContent("");
+    });
+
+    it("演算子変更で式のシンボルが更新される", async () => {
+      await render(<TestCalculator />);
+      const expression = page.getByTestId("expression");
+
+      await page.getByTestId("btn-5").click();
+      await page.getByTestId("btn-add").click();
+      await expect.element(expression).toHaveTextContent("5 +");
+
+      await page.getByTestId("btn-subtract").click();
+      await expect.element(expression).toHaveTextContent("5 −");
+    });
+
+    it("各演算子のシンボルが正しい", async () => {
+      await render(<TestCalculator />);
+      const expression = page.getByTestId("expression");
+
+      await page.getByTestId("btn-5").click();
+      await page.getByTestId("btn-add").click();
+      await expect.element(expression).toHaveTextContent("5 +");
+
+      await page.getByTestId("btn-clear").click();
+      await page.getByTestId("btn-5").click();
+      await page.getByTestId("btn-subtract").click();
+      await expect.element(expression).toHaveTextContent("5 −");
+
+      await page.getByTestId("btn-clear").click();
+      await page.getByTestId("btn-5").click();
+      await page.getByTestId("btn-multiply").click();
+      await expect.element(expression).toHaveTextContent("5 ×");
+
+      await page.getByTestId("btn-clear").click();
+      await page.getByTestId("btn-5").click();
+      await page.getByTestId("btn-divide").click();
+      await expect.element(expression).toHaveTextContent("5 ÷");
+
+      await page.getByTestId("btn-clear").click();
+      await page.getByTestId("btn-5").click();
+      await page.getByTestId("btn-power").click();
+      await expect.element(expression).toHaveTextContent("5 ^");
+    });
+
+    it("=の後に数字を入力すると式がクリアされる", async () => {
+      await render(<TestCalculator />);
+      const expression = page.getByTestId("expression");
+
+      await page.getByTestId("btn-5").click();
+      await page.getByTestId("btn-add").click();
+      await page.getByTestId("btn-3").click();
+      await page.getByTestId("btn-equals").click();
+      await expect.element(expression).toHaveTextContent("5 + 3 =");
+
+      await page.getByTestId("btn-1").click();
+      await expect.element(expression).toHaveTextContent("");
     });
   });
 
