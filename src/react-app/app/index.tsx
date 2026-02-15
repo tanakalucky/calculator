@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./styles/index.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Route, Switch } from "wouter";
 import { HomePage } from "@/pages/home";
 import { ErrorBoundary } from "@/app/providers/ErrorBoundary";
 
@@ -18,7 +19,10 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
-        <HomePage />
+        <Switch>
+          <Route path="/" component={HomePage} />
+          <Route>404 Not Found</Route>
+        </Switch>
       </QueryClientProvider>
     </ErrorBoundary>
   </StrictMode>,

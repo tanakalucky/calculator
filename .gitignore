@@ -110,6 +110,7 @@ Desktop.ini
 test-results/
 playwright-report/
 coverage/
+__screenshots__
 
 # Vitest
 coverage
