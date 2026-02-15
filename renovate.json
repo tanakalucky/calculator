@@ -1,0 +1,47 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "branchNameStrict": true,
+  "timezone": "Asia/Tokyo",
+  "schedule": ["every weekend"],
+  "labels": ["renovate"],
+  "rangeStrategy": "bump",
+  "patch": {
+    "automerge": true
+  },
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 5am on monday"]
+  },
+  "packageRules": [
+    {
+      "matchPackageNames": ["oxlint**"],
+      "groupName": "Linter"
+    },
+    {
+      "matchPackageNames": ["oxfmt**"],
+      "groupName": "Formatter"
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "groupName": "GitHub Actions",
+      "rangeStrategy": "auto"
+    },
+    {
+      "matchPackageNames": ["wrangler**", "@cloudflare/**"],
+      "groupName": "Cloudflare"
+    },
+    {
+      "matchPackageNames": ["vite", "@vitejs**"],
+      "groupName": "Vite"
+    },
+    {
+      "matchPackageNames": ["vitest**", "@vitest**"],
+      "groupName": "Vitest"
+    },
+    {
+      "matchPackageNames": ["tailwind**", "@tailwind**", "tw-**"],
+      "groupName": "TailwindCSS"
+    }
+  ]
+}
