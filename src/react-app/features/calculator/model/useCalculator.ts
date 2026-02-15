@@ -3,6 +3,8 @@ import { calculate } from "@/shared/lib/calculator";
 import type { Operation } from "@/shared/lib/calculator";
 import type { CalculatorState } from "./types";
 
+const MAX_DISPLAY_DIGITS = 16;
+
 export const useCalculator = () => {
   const [state, setState] = useState<CalculatorState>({
     display: "0",
@@ -42,6 +44,11 @@ export const useCalculator = () => {
           waitingForOperand: false,
           error: null,
         };
+      }
+
+      const currentDigits = prevState.display.replace(/[-.]/, "").length;
+      if (currentDigits >= MAX_DISPLAY_DIGITS) {
+        return prevState;
       }
 
       return {
